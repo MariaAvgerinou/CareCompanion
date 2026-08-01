@@ -51,8 +51,22 @@ document.getElementById('save-med-btn').addEventListener('click', function() {
   const name = document.getElementById('med-name').value;
   const time = document.getElementById('med-time').value;
   const dose = document.getElementById('med-dose').value;
+
+  // spinner
+  document.getElementById('loading-spinner').style.display = 'block';
+  document.getElementById('save-med-btn').disabled = true;
+
+  // save after 1 sec
+  setTimeout(function() {
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('save-med-btn').disabled = false;
+    alert('Medication saved (demo)');
+    showScreen('main-screen');
+  }, 1000);
+});
   console.log('Save medication:', { name, time, dose });
-  // PLACEHOLDER: Replace with Firebase Firestore save
+
+  //Replace with Firebase Firestore save
   alert('Medication saved (demo)');
   showScreen('main-screen');
 });
