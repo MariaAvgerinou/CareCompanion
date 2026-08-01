@@ -1,3 +1,8 @@
+// DATA
+let medications = [];
+
+// UI CONTROLS
+
 // Show/hide screens
 function showScreen(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
@@ -14,25 +19,36 @@ document.getElementById('add-med-btn').addEventListener('click', () => showScree
 
 // Logout
 document.getElementById('logout-btn').addEventListener('click', () => {
-  // Placeholder — will be replaced with Firebase logout
   console.log('Logout clicked');
   showScreen('login-screen');
 });
 
-// SOS button
+// SOS BUTTON (with vibration + color change)
+
 document.getElementById('sos-btn').addEventListener('click', function() {
-  // Placeholder — will be replaced with actual SOS logic (GPS + Twilio)
-  console.log(' SOS button pressed');
+  // vibration
+  if (navigator.vibrate) {
+    navigator.vibrate(500);
+  }
+  
+  // color change
+  this.style.backgroundColor = '#b91c1c';
+  setTimeout(() => {
+    this.style.backgroundColor = '#dc2626';
+  }, 500);
+
+  console.log('SOS button pressed');
   alert('SOS alert sent to your caregivers.');
 });
+
+// LOGIN / SIGNUP
 
 // Login
 document.getElementById('login-btn').addEventListener('click', function() {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
   console.log('Login with:', email, password);
-  // PLACEHOLDER: Replace with Firebase Auth
-  // For demo, just go to main screen
+  //Replace with Firebase Auth
   showScreen('main-screen');
 });
 
@@ -42,60 +58,73 @@ document.getElementById('signup-btn').addEventListener('click', function() {
   const password = document.getElementById('signup-password').value;
   const name = document.getElementById('signup-name').value;
   console.log('Signup with:', email, password, name);
-  // PLACEHOLDER: Replace with Firebase Auth
+  //Replace with Firebase Auth
   showScreen('main-screen');
 });
 
-// Save medication
+// SAVE MEDICATION (with loading spinner + success screen)
 document.getElementById('save-med-btn').addEventListener('click', function() {
   const name = document.getElementById('med-name').value;
   const time = document.getElementById('med-time').value;
   const dose = document.getElementById('med-dose').value;
 
-  // spinner
+  //loading spinner
   document.getElementById('loading-spinner').style.display = 'block';
   document.getElementById('save-med-btn').disabled = true;
 
-  // save after 1 sec
+  //add to list
+  medications.push({ name, time, dose });
+  updateMedicationList();
+
+  //saving demo (1 sec)
   setTimeout(function() {
     document.getElementById('loading-spinner').style.display = 'none';
     document.getElementById('save-med-btn').disabled = false;
-    alert('Medication saved (demo)');
-    showScreen('main-screen');
+    showScreen('success-screen'); // goes to success screen
   }, 1000);
 });
-  console.log('Save medication:', { name, time, dose });
 
-  //Replace with Firebase Firestore save
-  alert('Medication saved (demo)');
+// MEDICATION LIST
+function updateMedicationList() {
+  const list = document.getElementById('med-list');
+  list.innerHTML = ''; // emptying
+
+  if (medications.length === 0) {
+    list.innerHTML = '<li class="empty-msg">No medications added yet.</li>';
+    return;
+  }
+
+  medications.forEach(function(med) {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${med.name}</strong> ${med.dose} at ${med.time}`;
+    list.appendChild(li);
+  });
+}
+
+// BACK TO MAIN
+document.getElementById('back-to-main-btn').addEventListener('click', function() {
   showScreen('main-screen');
 });
 
-// =============================================
-// FIREBASE PLACEHOLDERS (fill here)
-// =============================================
+//FIREBASE PLACEHOLDERS
+
 
 function loginUser(email, password) {
-  // Firebase Auth login will go here
   console.log('Firebase login placeholder');
 }
 
 function signupUser(email, password, name) {
-  // Firebase Auth signup will go here
   console.log('Firebase signup placeholder');
 }
 
 function saveMedicationToDB(medData) {
-  // Firebase Firestore save will go here
   console.log('Firebase save placeholder');
 }
 
 function loadMedicationsFromDB() {
-  //Firebase Firestore load will go here
   console.log('Firebase load placeholder');
 }
 
 function sendSOSAlert(location) {
-  //backend API call will go here
   console.log('SOS send placeholder');
 }
